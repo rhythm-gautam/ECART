@@ -1,0 +1,147 @@
+{% extends 'main/base.html' %}
+
+	
+	{% block content %}
+	{% load static %}
+
+
+	<div id="mainBody">
+		<div class="container">
+			<div class="row">
+				<!-- Sidebar ================================================== -->
+				<div id="sidebar" class="span3">
+					{% if profile %}
+					<div class="well well-small">
+						<a id="myCart" href="/cart/"><img src="{% static 'main/images/ico-cart.png' %}" alt="cart"><span id="cartItems">0</span> Items in your cart</a>
+					</div>
+					{% endif %}
+					<ul id="sideManu" class="nav nav-tabs nav-stacked">
+						{% for category in categories %}
+						<li class="subMenu open"><a>{{ category.name }}</a>
+							<ul>
+								{% for subcategory in category.subcategories %}
+								<li>
+									<a class="active" href="/category/{{subcategory.id}}"><i class="icon-chevron-right"></i>{{ subcategory.name }} ({{ subcategory.numproducts }})</a>
+								</li>				
+								{% endfor %}
+							</ul>
+						</li>
+						{% endfor %}
+					</ul>
+
+					<br/>
+
+				
+				</div>
+				<!-- Sidebar end=============================================== -->
+	
+				<div class="span9">
+    				<ul class="breadcrumb">
+    					<li><a href="index.php">Home</a> <span class="divider">/</span></li>
+    					<li><a href="products.php">{{product.categoryid.name}}</a> <span class="divider">/</span></li>
+    					<li class="active">{{product.name}}</li>
+    				</ul>	
+					<div class="row">	  
+						<div id="gallery" class="span3" style="text-align: center;">
+            				<a href="/media/{{product.image}}" title="Fujifilm FinePix S2950 Digital Camera">
+								<img src="/media/{{product.images.0}}" style="height:240px;" alt="Fujifilm FinePix S2950 Digital Camera"/>
+            				</a>
+						<div id="differentview" class="moreOptopm carousel slide">
+                		<div class="carousel-inner">
+                  			<div class="item active">
+                  				{% for image in product.images %}
+                  					<a href="/media/{{image}}"> <img style="height:80px;" src="/media/{{image}}" alt=""/></a>
+                  				{% endfor %}
+                  			</div>
+                  			<div class="item">
+                   				{% for image in product.images %}
+                   					<a href="/media/{{image}}"> <img style="height:80px;" src="/media/{{image}}" alt=""/></a>
+                  				{% endfor %}
+                  			</div>
+                		</div>
+                
+			  <a class="left carousel-control" href="#myCarousel" data-slide="prev">‹</a>
+              <a class="right carousel-control" href="#myCarousel" data-slide="next">›</a> 
+			  
+              </div>	  
+			</div>
+
+			<div class="span6">
+				<h3>{{product.name}}, 
+					{% for highlight in highlights %}
+						{{ highlight }},
+					{% endfor %}
+				</h3>
+					<hr class="soft"/>
+		
+
+					 ₹ {{product.price}}
+					  <button type="button" class="btn btn-large btn-primary" style="margin-left:240px;" onclick="AddCart({{product.id}})"> Add to cart <i class=" icon-shopping-cart"></i></button>
+				
+				<hr class="soft"/>
+				<h4>In Stock</h4>
+			<hr class="soft"/>
+			</div>
+			
+			<div class="span9">
+            <div id="myTabContent" class="tab-content">
+              <div class="tab-pane fade active in" id="home">
+			  <h4>Product Information</h4>
+                <table class="table table-bordered">
+				<tbody>
+				<tr class="techSpecRow"><th colspan="2">Product Details</th></tr>
+				{% for feature in features %}
+				<tr class="techSpecRow"><td class="techSpecTD1">{{feature.featureid.name}} </td><td class="techSpecTD2">{{feature.value}}</td></tr>
+				{% endfor %}
+				</tbody>
+				</table>
+				
+			<hr class="soft"/>
+			</div>
+		</div>
+	</div>
+				<br class="clr"/>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- MainBody End ============================= -->
+
+	<script>
+		function AddCart(productid)
+		{
+			xhr=new XMLHttpRequest();
+			xhr.open('GET','/cart/add/'+productid);
+			xhr.send();
+			xhr.onreadystatechange=function()
+			{
+				if(xhr.readyState==4)
+				{
+					response_data=JSON.parse(xhr.responseText);
+					if(response_data.response=="User Not Logged In" && productid!=0)
+					{
+						$("#login").modal();
+					}
+					else if(response_data.response=='Duplicate Record')
+					{
+						alert('Item Already Exist in Your Cart');
+					}
+					else
+					{
+						document.getElementById('cartItems').innerHTML=response_data['cartitems'];
+						document.getElementById('cartItemMenu').innerHTML=response_data['cartitems'];
+					}
+				}
+			}
+		}
+
+		onload=function()
+		{
+			AddCart(0);
+		}
+
+
+	</script>
+
+
+	{% endblock %}

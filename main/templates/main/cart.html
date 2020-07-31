@@ -1,0 +1,89 @@
+{% extends 'main/base.html' %}
+
+	
+	{% block content %}
+	{% load static %}
+
+<div id="mainBody">
+	<div class="container">
+	<div class="row">
+	<div class="span12">
+    <ul class="breadcrumb">
+		<li><a href="index.html">Home</a> <span class="divider">/</span></li>
+		<li class="active"> SHOPPING CART</li>
+    </ul>
+	<h3>  SHOPPING CART [ <small><span id="cartItems">3</span> Item(s) </small>]<a href="/" class="btn btn-large pull-right"><i class="icon-arrow-left"></i> Continue Shopping </a></h3>	
+			
+	<table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Description</th>
+           		  <th>Price</th>
+                  <th>Tax</th>
+                  <th>Total</th>
+				</tr>
+              </thead>
+              <tbody>
+              	{% for cartitem in cart %}
+                <tr>
+                  <td><a href="/productdetails/{{cartitem.productid.id}}">{{ cartitem.productid.name }}<br/>Color : black, Material : metal</a><br><br>
+                  	<form method="get" action="/cart/delete/{{cartitem.id}}">
+                  		<button type="submit" class="btn btn-danger">Remove</button>
+                 	</form> 
+                  </td>
+				  <td style="text-align: center"> <img width="60px" src="/media/{{ cartitem.productid.image }}" alt=""/></td>
+                  <td>₹ {{ cartitem.productid.price }}</td>
+                  <td>₹ {{ cartitem.productid.tax }}</td>
+                  <td>₹ {{ cartitem.productid.total }}</td>
+                </tr>
+                {% endfor %}
+
+				 <tr>
+                  <td colspan="4" style="text-align:right"><strong>NET TOTAL =</strong></td>
+                  <td class="label label-important" style="display:block"> <strong>₹ {{ grandtotal }} </strong></td>
+                </tr>
+				</tbody>
+            </table>
+		
+		
+	<a href="/" class="btn btn-large"><i class="icon-arrow-left"></i> Continue Shopping </a>
+	<a href="/payment" class="btn btn-large pull-right">Next <i class="icon-arrow-right"></i></a>
+	
+</div>
+</div></div>
+</div>
+<!-- MainBody End ============================= -->
+
+	<script>
+		onload=function()
+		{
+			xhr=new XMLHttpRequest();
+			xhr.open('GET','/cart/add/0');
+			xhr.send();
+			xhr.onreadystatechange=function()
+			{
+				if(xhr.readyState==4)
+				{
+					response_data=JSON.parse(xhr.responseText);
+					if(response_data.response=="User Not Logged In" && productid!=0)
+					{
+						$("#login").modal();
+					}
+					else if(response_data.response=='Duplicate Record')
+					{
+						alert('Item Already Exist in Your Cart');
+					}
+					else
+					{
+						document.getElementById('cartItems').innerHTML=response_data['cartitems'];
+						document.getElementById('cartItemMenu').innerHTML=response_data['cartitems'];
+					}
+				}
+			}
+		}
+	</script>
+
+
+
+{% endblock %}

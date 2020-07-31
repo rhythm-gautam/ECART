@@ -1,0 +1,119 @@
+{% load static %}
+
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="{% static 'main/css/bootstrap.min.css' %}"/>
+    <link href="{% static 'main/css/base.css' %}" rel="stylesheet" />
+    <link href="{% static 'main/css/bootstrap-responsive.min.css' %} rel="stylesheet"/>
+    <link href="{% static 'main/css/font-awesome.css' %}" rel="stylesheet" type="text/css">
+	<link href="{% static  'main/js/google-code-prettify/prettify.css' %}" rel="stylesheet"/>
+</head>
+<body>
+
+	<div id="header">
+		<div class="container">
+			<div id="welcomeLine" class="row">
+				<div class="span6">Welcome!<strong>{% if not profile %} User {% else %} {{ profile.name }} {% endif %}</strong></div>
+				<div class="span6">
+				<div class="pull-right">	
+	 					 	{% if not profile %}
+	 					 	<a href="/register/"><span class="btn btn-success">Not a user Register Here</span>	</a> | 
+		 					<a href="#login" role="button" data-toggle="modal" style="padding-right:0"><span class="btn  btn-success">Login</span></a> 
+		 					{% else %}
+		 						<a href="/user/profile">Manage Profile</a> |
+								<a href="/orders/">My Orders</a> |  
+
+		 					<a href="/logout/" role="button" style="padding-right:0"><span class="btn btn-success">Logout</span></a>						
+		 					{% endif %}
+
+							<div id="login" class="modal hide fade in" tabindex="-1" role="dialog" aria-labelledby="login" aria-hidden="false" >
+						
+			  					<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
+									<h3>Login</h3>
+			  					</div>
+							    <div class="modal-body">
+									<form action="/login/" class="form-horizontal loginFrm" method="post">
+										{% csrf_token %}
+				  						<div class="control-group">								
+											<input type="text" id="inputEmail" placeholder="Email" name="email">
+				  						</div>
+				  						<div class="control-group">
+											<input type="password" id="inputPassword" placeholder="Password" name="password">
+				  						</div>
+				  						<div class="control-group">
+										<button type="submit" class="btn btn-success">Sign in</button>
+										<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+										</div>			</form>		
+			  					</div>
+							</div>					 
+				</div>
+				</div>
+		</div>
+
+			<!-- Navbar ================================================== -->
+			<div id="logoArea" class="navbar">
+			<a id="smallScreen" data-target="#topMenu" data-toggle="collapse" class="btn btn-navbar">
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</a>
+				<div class="navbar-inner">
+    				<a class="brand" href="/"><img src="{% static 'main/images/logo.png' %}" alt="Bootsshop"/ style="width:100px;height:60px;"></a>
+					<form class="form-inline navbar-search" method="post" action="products.html" >
+						<input id="srchFld" class="srchTxt" type="text" />
+		  				<select class="srchTxt">
+							<option>All</option>
+							<option>CLOTHES </option>
+							<option>FOOD AND BEVERAGES </option>
+							<option>HEALTH & BEAUTY </option>
+							<option>SPORTS & LEISURE </option>
+							<option>BOOKS & ENTERTAINMENTS </option>
+						</select> 
+		  				<button type="submit" id="submitButton" class="btn btn-primary">Go</button>
+    				</form>
+    				<ul id="topMenu" class="nav pull-right">
+					 	<li class="">
+					{% if profile %}
+		 	 		
+		 			<a href="/cart/"><span class="btn btn-mini btn-primary"><i class="icon-shopping-cart icon-white"></i> [ <span id="cartItemMenu">0</span> ] Itemes in your cart </span> </a>
+		 			{% endif %}
+						</li>
+		 			
+		 			
+    				</ul>
+  				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Header End====================================================================== -->
+
+
+
+
+	
+
+	{% block content %}
+    {% endblock %}
+
+
+	<!-- Footer ================================================================== -->
+	<div  id="footerSection">
+		<div class="container">
+			<p class="">&copy; Easykart. All rights reserved
+				<br>
+			Designed and Developed by Rhythm Gautam CSE/17/217			</p>
+		</div><!-- Container End -->
+	</div>
+	
+	<script src="{% static 'main/js/jquery.js' %}" type="text/javascript"></script>
+	<script src="{% static 'main/js/bootstrap.min.js' %}" type="text/javascript"></script>
+	<script src="{% static 'main/js/google-code-prettify/prettify.js' %}"></script>	
+	<script src="{% static 'main/js/main.js' %}"></script>
+    <script src="{% static 'main/js/jquery.lightbox-0.5.js' %}"></script>
+</body>
+</html>
